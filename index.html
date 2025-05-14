@@ -1362,16 +1362,16 @@
                         continue;
                     }
 
-                    // 18時以降に終了する予約を不可にする (17:30は可)
-                    if (slotEnd.getHours() === 18 && slotEnd.getMinutes() > 0) {
-                        cell.textContent = '✕';
-                        cell.classList.add('unavailable');
-                        continue;
-                    } else if (slotEnd.getHours() > 18) {
-                        cell.textContent = '✕';
-                        cell.classList.add('unavailable');
-                        continue;
-                    }
+// 13:10 から 14:00 までの予約を不可にする
+if ((slotEnd.getHours() === 13 && slotEnd.getMinutes() >= 15) || (slotEnd.getHours() === 14 && slotEnd.getMinutes() === 0)) {
+    cell.textContent = '✕';
+    cell.classList.add('unavailable');
+    continue;
+} else if (slotEnd.getHours() > 13 && slotEnd.getHours() < 14) {
+    cell.textContent = '✕';
+    cell.classList.add('unavailable');
+    continue;
+}
 
                     // ここで終了時間を使った条件処理を行う
                     // 例えば、リアルタイムで既に過ぎた時間帯は×にする
@@ -1416,8 +1416,28 @@
                         cell.textContent = '✕';
                         cell.classList.add('unavailable');
                     }
+                    // 月・火・木・金・土の09:00~10:59は✕にする（優先的にチェック）
+                    if ((slotStart.getDay() === 1 || slotStart.getDay() === 2 ||
+                        slotStart.getDay() === 4 || slotStart.getDay() === 5 ||
+                        slotStart.getDay() === 6) &&
+                        ((slotStart.getHours() === 12 && slotStart.getMinutes() >= 45) ||
+                            (slotStart.getHours() >= 13 && slotStart.getHours() <= 14))) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                    }
+                    // 土曜日の18:01～20:00まで✖にする
+                    else if (slotStart.getDay() === 6 && slotStart.getHours() >= 18 && slotStart.getHours() < 20 ||
+                        (slotStart.getHours() === 20 && slotStart.getMinutes() === 0)) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                    }
                     // 日曜日で、営業日ではない場合
                     else if (slotStart.getDay() === 0 && !isBusinessDay && businessEventTimes.length === 0) {
+                        cell.textContent = '✕';
+                        cell.classList.add('unavailable');
+                    }
+                    // 日曜日で、営業日ではない場合
+                    else if (slotStart.getDay() === 3 && !isBusinessDay && businessEventTimes.length === 0) {
                         cell.textContent = '✕';
                         cell.classList.add('unavailable');
                     }
