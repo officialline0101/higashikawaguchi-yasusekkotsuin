@@ -927,6 +927,10 @@
         </div>
         <hr>
         <div class="info-row">
+            <p>${totalTimeText}</p>
+        </div>
+        <hr>
+        <div class="info-row">
             <p>${selectedDateText}</p>
             <button class="edit-button" onclick="scrollToElement('calendar1')">修正する</button>
         </div>
@@ -954,19 +958,19 @@
             button.addEventListener('click', updateDisplayInfo);
         });
 
-        document.querySelectorAll('.symptoms button').forEach(button => {
-            button.addEventListener('click', () => {
-                const calendarContainer = document.querySelector('.calendar-container');
+document.querySelector('.symptoms').addEventListener('click', (event) => {
+    if (event.target.tagName === 'BUTTON') {
+        updateDisplayInfo();
 
-                // 選択されたメニューがあればカレンダーを表示
-                if (document.querySelectorAll('.symptoms button.active').length > 0) {
-                    calendarContainer.style.display = 'block';
-                } else {
-                    // 選択が解除された場合、カレンダーを非表示
-                    calendarContainer.style.display = 'none';
-                }
-            });
-        });
+        // カレンダー表示の更新処理（同じくここに入れてOK）
+        const calendarContainer = document.querySelector('.calendar-container');
+        if (document.querySelectorAll('.symptoms button.active').length > 0) {
+            calendarContainer.style.display = 'block';
+        } else {
+            calendarContainer.style.display = 'none';
+        }
+    }
+});
 
         // 初期状態でカレンダーを非表示にする
         document.addEventListener('DOMContentLoaded', () => {
